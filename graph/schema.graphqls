@@ -1,0 +1,123 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Bab {
+  id: ID!
+  title: String!
+  order: Int!
+  subBabs: [SubBab!]!
+}
+
+type SubBab {
+  id: ID!
+  title: String!
+  order: Int!
+  imageURL: String!
+	instructorName: String!
+  bab: Bab!
+  contents: [Content!]!
+}
+
+type Content {
+  id: ID!
+  title: String!
+  order: Int!
+  type: String!
+	durationInMinute: Int!
+  subBab: SubBab!
+  isCompleted: Boolean!
+}
+
+type Material {
+  videoURL: String!
+	audioURL: String!
+	text: String!
+  content: Content!
+}
+
+type Test {
+	minimumScore: Int!
+  content: Content!
+  questions: [Question!]!
+  log: ExamLog
+}
+
+type Question {
+  id: ID!
+  order: Int!
+  question: String!
+  options: StringArray!
+  answer: Int!
+  test: Test!
+}
+
+type ExamLog {
+  score: Int!
+  correctAnswerNum: Int!
+  answers: Int32Array!
+  updatedAt: Timestamp!
+}
+
+type Query {
+  babs: [Bab!]!
+  bab(babID: Int!, email: String): Bab!
+  material(contentID: Int!, email: String): Material!
+  test(contentID: Int!, email: String): Test!
+  #temp
+  isCheck(contentID: Int!, email: String!): Boolean!
+  subBabs: [SubBab!]!
+}
+
+input NewBab {
+  title: String!
+  order: Int!
+  subBabs: [NewSubBab!]!
+}
+
+input NewSubBab {
+  title: String!
+  order: Int!
+  imageURL: String!
+	instructorName: String!
+}
+
+input NewMaterial {
+  title: String!
+  order: Int!
+  videoURL: String!
+	audioURL: String!
+	text: String!
+  durationInMinute: Int!
+}
+
+input NewTest {
+  title: String!
+  order: Int!
+	minimumScore: Int!
+}
+
+input NewQuestion {
+  order: Int!
+  question: String!
+  options: [String!]!
+  hint: String!
+  answer: Int!
+}
+
+type Mutation {
+  createBab(input: NewBab!): Bab!
+  createSubBab(babID: Int!, input: NewSubBab!): SubBab!
+  createMaterial(subBabID: Int!, input: NewMaterial!): Material!
+  createQuiz(subBabID: Int!, input: NewTest!): Test!
+  createExam(subBabID: Int!, input: NewTest!): Test!
+  createQuestion(testID: Int!, input: NewQuestion!): Question!
+  markComplete(contentID: Int!, email: String!): Boolean!
+  submitExam(testID: Int!, email: String!, answers: [Int!]!): ExamLog!
+  deleteBab(babID: Int!): Boolean!
+  deleteSubBab(subBabID: Int!): Boolean!
+}
+
+scalar StringArray
+scalar Int32Array
+scalar Timestamp
